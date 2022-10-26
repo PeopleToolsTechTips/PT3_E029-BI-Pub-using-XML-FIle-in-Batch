@@ -1,0 +1,12 @@
+import PSXP_RPTDEFNMANAGER:*;
+
+
+&oRptDefn = create PSXP_RPTDEFNMANAGER:ReportDefn(X_PT3_TAXRP_AET.REPORT_DEFN_ID);
+&oRptDefn.Get();
+&oRptDefn.SetRuntimeDataXMLFile(X_PT3_TAXRP_AET.FILE_PATH_NAME);
+/* Process Report */
+
+&oRptDefn.ProcessInstance = &ProcessInstance; /*mdu XXX */
+&oRptDefn.ProcessReport("", "", %Date, "");
+
+&oRptDefn.publish("", "", "", X_PT3_TAXRP_AET.PROCESSINSTANCE);

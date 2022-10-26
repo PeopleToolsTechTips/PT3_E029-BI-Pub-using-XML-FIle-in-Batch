@@ -1,0 +1,54 @@
+/*********************************************************/
+/** PeoopleTools Tech Tips  		   	        		**/
+/** Randy Groncki 2022-10-21          	                **/
+/** peopletoolstechtips@gmail.com                       **/
+/** BI Pub using XML FIle in Batch		                **/
+/*********************************************************/
+import PSXP_RPTDEFNMANAGER:*;
+
+Local string &TemplateId = "";
+Local integer &ProcessInstance = X_PT3_TAXRP_AET.PROCESSINSTANCE;
+Local string &LanguageCd = "";
+Local date &AsOfDate = %Date;
+
+Local PSXP_RPTDEFNMANAGER:ReportDefn &oRptDefn = create PSXP_RPTDEFNMANAGER:ReportDefn(X_PT3_TAXRP_AET.REPORT_DEFN_ID);
+&oRptDefn.Get();
+
+&oRptDefn.Debug = False;
+
+/* set UseBurstValueAsOutputFileName to name bursted report using burst values, default is false. 
+		If Descriptive name is set (&Report.Userfilename), it will override this setting*/
+&oRptDefn.UseBurstValueAsOutputFileName = False;
+
+/* set file path only for file output type - other types use default temporary location */
+If %OutDestType = 2 Then /* file */
+   
+   /* set BurstValueAsOutSubDir to true to use burst value as folder names for bursted files. 
+		This should be used only when OutDestinationType is File. Default value is false*/
+   &oRptDefn.BurstValueAsOutSubDir = False;
+   
+   &oRptDefn.OutDestination = %FilePath;
+End-If;
+
+&oRptDefn.SetRuntimeDataXMLFile(X_PT3_TAXRP_AET.FILE_PATH_NAME);
+
+&oRptDefn.ProcessInstance = &ProcessInstance; /*mdu XXX */
+&oRptDefn.ProcessReport(&TemplateId, &LanguageCd, &AsOfDate, &oRptDefn.GetOutDestFormatString(%OutDestFormat));
+
+/* code for debugging 2 tier AE */
+/* &oRptDefn.ProcessReport("", "ENG", %Date, "HTM"); */
+
+
+/* publish */
+If %OutDestType = 6 Then /* Web */
+   &oRptDefn.Publish("", "", "", &ProcessInstance);
+   
+Else
+   If %OutDestType = 3 Then /* Printer */
+      &oRptDefn.PrintOutput(%FilePath);
+   Else
+      If %OutDestType = 5 Then /* Email */
+         &bResult = &oRptDefn.EmailOutput(&ProcessInstance);
+      End-If;
+   End-If;
+End-If;
