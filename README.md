@@ -5,7 +5,7 @@ Use XML Files in BI Publisher with PeopleSoft Batch Reporting
 * Randy Groncki	2022-10-26
 
 
-Walkthrough Documentation: https://peopletoolstechtips.com/TBD
+Walkthrough Documentation: https://peopletoolstechtips.com/use-xml-files-in-bi-publisher-with-peoplesoft-batch-reporting/
 
 YouTube demo: https://youtu.be/jzwzykHWpK8
 
